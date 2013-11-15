@@ -1,0 +1,61 @@
+import com.android.builder.DefaultManifestParser
+def manifestParser = new DefaultManifestParser()
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion '18.1.0'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 18
+    }
+
+    signingConfigs {
+
+        release {
+            storeFile file('C:\\Users\\danshin\\Dropbox\\Documents\\Projects\\Cardio\\keystore\\android.key')
+            storePassword "57103261479"
+            keyAlias "myreleasekey"
+            keyPassword "5710326"
+        }
+    }
+
+    buildTypes {
+
+        release {
+            signingConfig signingConfigs.release
+            applicationVariants.all { variant ->
+                def appName = 'CardioSport'
+                def versionName = manifestParser.getVersionName(android.sourceSets.main.manifest.srcFile);
+                def file = variant.outputFile
+                variant.outputFile = new File(file.parent, appName + "-" + versionName + "-release.apk")
+            }
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:18.0.0'
+    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.codegist.crest:codegist-crest:2.0.0-RC1'
+    compile files('lib/BluetoothGatt.jar')
+    compile files('lib/BluetoothGattService.jar')
+    compile files('lib/clientserverinteraction.jar')
+    compile files('lib/flanagan.jar')
+    compile 'log4j:log4j:1.2.17'
+}
